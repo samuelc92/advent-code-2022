@@ -19,6 +19,12 @@ isOverlaping (x1, y1) (x2, y2) =
         then 1
         else 0
 
+isOverlaping2 :: (Int, Int) -> (Int, Int) -> Int 
+isOverlaping2 (x1, y1) (x2, y2) =
+    if ((x1 <= x2) && (y1 >= x2)) || ((x1 >= x2) && (y1 <= y2)) || ((x1 >= x2) && (x1 <= y2))
+        then 1
+        else 0
+
 processing :: String -> Int
 processing s =
     let a  = wordsWhen (== ',') s
@@ -26,7 +32,7 @@ processing s =
         c  = wordsWhen (== '-') (last a)
         t1 = (read (head b) :: Int, read (last b) :: Int)
         t2 = (read (head c) :: Int, read (last c) :: Int)
-    in isOverlaping t1 t2
+    in isOverlaping2 t1 t2
 
 main = do
     contents <- getContents
