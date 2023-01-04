@@ -1,3 +1,5 @@
+import Data.List 
+
 type Name = String
 type Bytes = Int
 data FSystem= Dir Name [FSystem] | File Name Bytes deriving (Show) 
@@ -50,9 +52,18 @@ process f =
     let filesGrouped = groupFiles f
     in sum (filter (<= 100000) (map (fileSize) filesGrouped))
 
+process2 :: FSystem -> Int -> Int
+process2 (File _ _) _ = 0
+process2 f s =
+    let filesGrouped = groupFiles f
+    in minimum (filter (>= (30000000 - (70000000 - s))) (map (fileSize) filesGrouped))
+
+
 main = do
     contents <- getContents
-    let root         = Dir "/" []
-        filesSystem  = foldl (\acc x-> cmd x acc) (root, []) (drop 1 $ lines contents)
-        result = process (fst (foldl (\acc _->up acc) filesSystem (snd filesSystem)))
-    print result 
+    let rootFSystem  = Dir "/" []
+        filesSystem  = foldl (\acc x-> cmd x acc) (rootFSystem, []) (drop 1 $ lines contents)
+        root         = (fst (foldl (\acc _->up acc) filesSystem (snd filesSystem)))
+        --result       = process (fst (foldl (\acc _->up acc) filesSystem (snd filesSystem)))
+        totalSize    = fileSize root
+    print $ process2 root totalSize 
