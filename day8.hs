@@ -1,21 +1,21 @@
 import Data.Sequence
 import Data.Foldable
 
+isVisible :: Bool -> [Int] -> Int -> Int -> Bool
+isVisible input l lIndex value =
+    if input == False
+        then False
+    else if (l !! lIndex) >= value
+        then False
+    else True
+
 isVisibleTop :: [[Int]] -> Int -> Int -> Int -> Bool 
 isVisibleTop input value valueIndex index =
-    foldl (\acc x -> if acc == False
-                        then False
-                    else if (x !! valueIndex) >= value
-                        then False
-                        else True) True (Prelude.take index input) 
+    foldl (\acc x -> isVisible acc x valueIndex value) True (Prelude.take index input) 
 
 isVisibleBottom :: [[Int]] -> Int -> Int -> Int -> Bool 
 isVisibleBottom input value valueIndex index =
-    foldl (\acc x -> if acc == False
-                        then False
-                    else if (x !! valueIndex) >= value
-                        then False
-                        else True) True (Prelude.drop (index + 1) input) 
+    foldl (\acc x -> isVisible acc x valueIndex value) True (Prelude.drop (index + 1) input) 
 
 process :: [[Int]] -> [Int] -> Int -> Int
 process input l index =
