@@ -9,6 +9,14 @@ isVisibleTop input value valueIndex index =
                         then False
                         else True) True (Prelude.take index input) 
 
+isVisibleBottom :: [[Int]] -> Int -> Int -> Int -> Bool 
+isVisibleBottom input value valueIndex index =
+    foldl (\acc x -> if acc == False
+                        then False
+                    else if (x !! valueIndex) >= value
+                        then False
+                        else True) True (Prelude.drop (index + 1) input) 
+
 process :: [[Int]] -> [Int] -> Int -> Int
 process input l index =
     sum $ toList $ mapWithIndex(\i v -> if (isVisibleTop input v i index) then 1 else 0) (fromList l)
