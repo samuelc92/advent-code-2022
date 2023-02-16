@@ -9,6 +9,14 @@ isVisible input l lIndex value =
         then False
     else True
 
+isVisibleLeft :: [Int] -> Int -> Int -> Bool 
+isVisibleLeft input value valueIndex =
+    foldl (\acc x -> if acc == False
+                        then False
+                    else if x >= value
+                            then False
+                    else True) True (Prelude.take valueIndex input) 
+
 isVisibleTop :: [[Int]] -> Int -> Int -> Int -> Bool 
 isVisibleTop input value valueIndex index =
     foldl (\acc x -> isVisible acc x valueIndex value) True (Prelude.take index input) 
