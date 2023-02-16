@@ -17,6 +17,14 @@ isVisibleLeft input value valueIndex =
                             then False
                     else True) True (Prelude.take valueIndex input) 
 
+isVisibleRight :: [Int] -> Int -> Int -> Bool 
+isVisibleRight input value valueIndex =
+    foldl (\acc x -> if acc == False
+                        then False
+                    else if x >= value
+                            then False
+                    else True) True (Prelude.drop (valueIndex + 1) input) 
+
 isVisibleTop :: [[Int]] -> Int -> Int -> Int -> Bool 
 isVisibleTop input value valueIndex index =
     foldl (\acc x -> isVisible acc x valueIndex value) True (Prelude.take index input) 
