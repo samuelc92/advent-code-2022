@@ -35,12 +35,12 @@ isVisibleBottom input value valueIndex index =
 
 process :: [[Int]] -> [Int] -> Int -> Int
 process input l index =
-    sum $ toList $ mapWithIndex(\i v -> if (isVisibleTop input v i index) then 1 else 0) (fromList l)
+    sum $ toList $ mapWithIndex(\i v -> if (isVisibleTop input v i index) || (isVisibleBottom input v i index) || (isVisibleLeft l v i) ||(isVisibleRight l v i) then 1 else 0) (fromList l)
 
 run :: [[Int]] -> [Int]
 run l =
     toList $ mapWithIndex(\i v -> if i == 0
-                then 0
+                then Prelude.length v
                 else if i == (Prelude.length l) - 1
-                    then 0
+                    then Prelude.length v
                     else (process l v i)) (fromList l)
