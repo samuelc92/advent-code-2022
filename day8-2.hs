@@ -2,48 +2,37 @@ import Data.Sequence
 import Data.Foldable
 import Data.Char
 
-isVisible :: Bool -> [Int] -> Int -> Int -> Bool
-isVisible input l lIndex value =
-    if input == False
-        then False
-    else if (l !! lIndex) >= value
-        then False
-    else True
-
-isVisibleLeft' :: [Int] -> Int -> Int -> Int 
-isVisibleLeft' input value valueIndex =
+countVisibleLeftTree :: [Int] -> Int -> Int -> Int 
+countVisibleLeftTree input value valueIndex =
     let c = Prelude.length $ takeWhile (< value) (Prelude.reverse (Prelude.take valueIndex input))
     in if c < (Prelude.length $ Prelude.take valueIndex input)
            then c + 1
            else c + 0
 
-isVisibleLeft :: [Int] -> Int -> Int -> Bool 
-isVisibleLeft input value valueIndex =
-    foldl (\acc x -> if acc == False
-                        then False
-                    else if x >= value
-                            then False
-                    else True) True (Prelude.take valueIndex input) 
+countVisibleRightTree :: [Int] -> Int -> Int -> Int 
+countVisibleRightTree input value valueIndex =
+    let c = Prelude.length $ takeWhile (< value) (Prelude.drop (valueIndex + 1) input)
+    in if c < (Prelude.length $ Prelude.drop (valueIndex + 1) input)
+           then c + 1
+           else c + 0
 
-isVisibleRight :: [Int] -> Int -> Int -> Bool 
-isVisibleRight input value valueIndex =
-    foldl (\acc x -> if acc == False
-                        then False
-                    else if x >= value
-                            then False
-                    else True) True (Prelude.drop (valueIndex + 1) input) 
+countVisibleTopTree :: [[Int]] -> Int -> Int -> Int -> Int 
+countVisibleTopTree input value valueIndex index =
+    let c = Prelude.length $ takeWhile (\l -> (l !! valueIndex) < value) (Prelude.reverse $ Prelude.take index input)
+    in if c < (Prelude.length $ Prelude.take index input)
+           then c + 1
+           else c + 0
 
-isVisibleTop :: [[Int]] -> Int -> Int -> Int -> Bool 
-isVisibleTop input value valueIndex index =
-    foldl (\acc x -> isVisible acc x valueIndex value) True (Prelude.take index input) 
-
-isVisibleBottom :: [[Int]] -> Int -> Int -> Int -> Bool 
-isVisibleBottom input value valueIndex index =
-    foldl (\acc x -> isVisible acc x valueIndex value) True (Prelude.drop (index + 1) input) 
+countVisibleBottomTree :: [[Int]] -> Int -> Int -> Int -> Int 
+countVisibleBottomTree input value valueIndex index =
+    let c = Prelude.length $ takeWhile (\l -> (l !! valueIndex) < value) (Prelude.drop (index + 1) input)
+    in if c < (Prelude.length $ Prelude.drop (index + 1) input)
+           then c + 1
+           else c + 0
 
 process :: [[Int]] -> [Int] -> Int -> Int
 process input l index =
-    sum $ toList $ mapWithIndex(\i v -> if (isVisibleTop input v i index) || (isVisibleBottom input v i index) || (isVisibleLeft l v i) ||(isVisibleRight l v i) then 1 else 0) (fromList l)
+    maximum $ toList $ mapWithIndex(\i v -> (countVisibleTopTree input v i index) * (countVisibleBottomTree input v i index) * (countVisibleLeftTree l v i) * (countVisibleRightTree l v i)) (fromList l)
 
 run :: [[Int]] -> [Int]
 run l =
@@ -56,4 +45,4 @@ run l =
 main = do
     contents <- getContents
     let l = foldr (\x acc -> (map digitToInt x) : acc) [] (lines contents)
-    print $ sum $ run l
+    print $ maximum $ run l
