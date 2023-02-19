@@ -1,5 +1,6 @@
 import Data.Sequence
 import Data.Foldable
+import Data.Char
 
 isVisible :: Bool -> [Int] -> Int -> Int -> Bool
 isVisible input l lIndex value =
@@ -44,3 +45,8 @@ run l =
                 else if i == (Prelude.length l) - 1
                     then Prelude.length v
                     else (process l v i)) (fromList l)
+
+main = do
+    contents <- getContents
+    let l = foldr (\x acc -> (map digitToInt x) : acc) [] (lines contents)
+    print $ sum $ run l
